@@ -25,7 +25,13 @@ app.get('/login', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-    user.userLogin(req.body.username, req.body.password);
+    user.userLogin(req.body.username, req.body.password, function(isExist) {
+        if(isExist) {
+            res.redirect('/'); 
+        } else {
+            res.redirect('/login');
+        }
+    }); 
 })
 
 var listener = app.listen(3000, function() {

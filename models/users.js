@@ -1,27 +1,29 @@
-var myqsl = require('mysql');
+var mysql = require('mysql');
 
 var pool = mysql.createPool({
     connectionLimit: 10,
-    host: 'localhost',
+    host: '172.17.0.2',
     user: 'root',
     password: 'root',
     database: 'todolist'
 });
 
-var User = function(data) {
-    this.data = data;
-}
+module.exports = {
 
-User.prototype.data = {};
+    signingInTheUser: function(user, callback) {
+        pool.getConnection(function(err, connection) {
+            var params = {
+                sql: 'SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1',
+                values: [user.email, user.password]
+            };
+            
+            connection.query(params, function(error, results, fields) {
+                if(error) return callback(error);
+                
+                callback(null, results)
 
-User.registerNewUser = function(data, callback) {
-    pool.getConnection(function(err, connection) {
-        var currentDate = new Date();
-
-        var query = 'INSERT INTO users (email, password, created_at) ';
-            query += 'VALUES ("'+data.email+'", "'+data.password+'", "")';
-        connection.query();
-    }); 
+                connection.release();
+            });
+        }); 
+    }
 };
-
-module.exports = User;
