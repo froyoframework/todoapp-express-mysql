@@ -10,16 +10,19 @@ var pool = mysql.createPool({
 
 module.exports = {
 
-    signingInTheUser: function(user, callback) {
+    createNewTask: function(taskName, callback) {
         
         pool.getConnection(function(err, connection) {
             var params = {
-                sql: 'select * from users where Email = ? and Password = ? LIMIT 1',
-                values: [user.email, user.password]
+                sql: 'INSERT INTO tasks SET ?',
+                values: {
+                    user_id: 1,
+                    task_name: taskName,
+                    created_at: '2016-10-28 00:00:00'
+                }
             };
             
             connection.query(params, function(error, results, fields) {
-                console.log(results);
                 if(error) return callback(error);
                 
                 callback(null, results)

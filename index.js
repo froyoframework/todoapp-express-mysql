@@ -1,6 +1,7 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var user = require('./controllers/login');
+var task = require('./controllers/task');
 var bodyParser = require('body-parser');
 
 var app = express();
@@ -33,6 +34,12 @@ app.post('/login', function(req, res) {
         }
     }); 
 })
+
+app.post('/task', function(req, res) {
+    task.createTask(req.body.task, function(result) {
+        res.redirect('/');
+    });
+});
 
 var listener = app.listen(3000, function() {
     console.log('Example app listening on port ' + listener.address().port);
